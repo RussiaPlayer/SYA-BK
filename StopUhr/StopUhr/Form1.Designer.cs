@@ -35,6 +35,7 @@
             // 
             // startBT
             // 
+            this.startBT.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.startBT.Location = new System.Drawing.Point(12, 124);
             this.startBT.Name = "startBT";
             this.startBT.Size = new System.Drawing.Size(146, 35);
@@ -45,6 +46,7 @@
             // 
             // stopBT
             // 
+            this.stopBT.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.stopBT.Location = new System.Drawing.Point(164, 124);
             this.stopBT.Name = "stopBT";
             this.stopBT.Size = new System.Drawing.Size(146, 35);
@@ -56,9 +58,10 @@
             // label1
             // 
             this.label1.AutoSize = true;
-            this.label1.Location = new System.Drawing.Point(63, 47);
+            this.label1.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.label1.Location = new System.Drawing.Point(26, 51);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(191, 13);
+            this.label1.Size = new System.Drawing.Size(271, 18);
             this.label1.TabIndex = 2;
             this.label1.Text = "00 Stunden, 00 Minuten, 00 Sekunden";
             // 
