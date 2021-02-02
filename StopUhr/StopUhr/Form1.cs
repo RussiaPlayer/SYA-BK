@@ -8,7 +8,8 @@ namespace StopUhr
     public partial class Form1 : Form
     {
         private System.Timers.Timer aTimer = new System.Timers.Timer();
-        private RainbowBackground RGbackground = new RainbowBackground();
+        private System.Timers.Timer RGtimer = new System.Timers.Timer();
+        private int Red = 255, Green = 1, Blue = 0;
         long s, m, h;
 
         public Form1()
@@ -16,17 +17,54 @@ namespace StopUhr
             InitializeComponent();
             aTimer.Interval = 1000;
             aTimer.Elapsed += OnTimeEvent;
+
+            RGtimer.Interval = 1;
+            RGtimer.AutoReset = true;
+            RGtimer.Elapsed += RGtimerEvent;
         }
 
         private void startBT_Click(object sender, EventArgs e)
         {
             ResetTimer();
             aTimer.Start();
+            RGtimer.Start();
         }
 
         private void stopBT_Click(object sender, EventArgs e)
         {
             aTimer.Stop();
+            RGtimer.Stop();
+            this.BackColor = Color.White;
+        }
+
+        private void RGtimerEvent(object sender, ElapsedEventArgs e)
+        {
+            if (Red == 255 && Green < 255 && Blue == 0)
+            {
+                ++Green;
+            }
+            else if (Red > 0 && Green == 255 && Blue == 0)
+            {
+                --Red;
+            }
+            else if (Red == 0 && Green == 255 && Blue < 255)
+            {
+                ++Blue;
+            }
+            else if (Red == 0 && Green > 0 && Blue == 255)
+            {
+                --Green;
+            }
+            else if (Red < 255 && Green == 0 && Blue == 255)
+            {
+                ++Red;
+            }
+            else if (Red == 255 && Green == 0 && Blue > 0)
+            {
+                --Blue;
+            }
+
+            this.BackColor = Color.FromArgb(Red, Green, Blue);
         }
 
         private void OnTimeEvent(object sender, ElapsedEventArgs e)
@@ -44,8 +82,6 @@ namespace StopUhr
                     ++h;
                     m = 0;
                 }
-
-                this.BackColor = RGbackground.RainbowBG(1000, true);
 
                 label1.Text = (h < 10 ? "0" : "") + $"{h} Stunde" + (h != 1 ? "n, " : ", ") + (m < 10 ? "0" : "") + $"{m} Minute" + (m != 1 ? "n, " : ", ") + (s < 10 ? "0" : "") + $"{s} Sekunde" + (s != 1 ? "n" : "");
             }));
