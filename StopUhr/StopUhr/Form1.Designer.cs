@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.startBT = new System.Windows.Forms.Button();
             this.stopBT = new System.Windows.Forms.Button();
             this.label1 = new System.Windows.Forms.Label();
@@ -35,24 +36,34 @@
             // 
             // startBT
             // 
+            this.startBT.BackColor = System.Drawing.Color.Transparent;
+            this.startBT.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.startBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.startBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.startBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.startBT.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.startBT.Location = new System.Drawing.Point(12, 124);
             this.startBT.Name = "startBT";
             this.startBT.Size = new System.Drawing.Size(146, 35);
             this.startBT.TabIndex = 0;
             this.startBT.Text = "Start";
-            this.startBT.UseVisualStyleBackColor = true;
+            this.startBT.UseVisualStyleBackColor = false;
             this.startBT.Click += new System.EventHandler(this.startBT_Click);
             // 
             // stopBT
             // 
+            this.stopBT.BackColor = System.Drawing.Color.Transparent;
+            this.stopBT.FlatAppearance.BorderColor = System.Drawing.Color.Black;
+            this.stopBT.FlatAppearance.MouseDownBackColor = System.Drawing.Color.Transparent;
+            this.stopBT.FlatAppearance.MouseOverBackColor = System.Drawing.Color.Transparent;
+            this.stopBT.FlatStyle = System.Windows.Forms.FlatStyle.Flat;
             this.stopBT.Font = new System.Drawing.Font("Arial", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.stopBT.Location = new System.Drawing.Point(164, 124);
             this.stopBT.Name = "stopBT";
             this.stopBT.Size = new System.Drawing.Size(146, 35);
             this.stopBT.TabIndex = 1;
             this.stopBT.Text = "Stop";
-            this.stopBT.UseVisualStyleBackColor = true;
+            this.stopBT.UseVisualStyleBackColor = false;
             this.stopBT.Click += new System.EventHandler(this.stopBT_Click);
             // 
             // label1
@@ -74,8 +85,11 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.stopBT);
             this.Controls.Add(this.startBT);
+            this.FormBorderStyle = System.Windows.Forms.FormBorderStyle.FixedSingle;
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MaximizeBox = false;
             this.Name = "Form1";
-            this.Text = "Form1";
+            this.Text = "Stop Uhr";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.ResumeLayout(false);
             this.PerformLayout();
