@@ -30,19 +30,18 @@ namespace Tastenabfrage
         private static extern int IowKitReadNonBlocking(int iowHandle, int numPipe, ref byte buffer, int length);
 
 
-        private int handle;
-        private System.Timers.Timer aTimer = new System.Timers.Timer();
+        public int handle;
+        public System.Timers.Timer aTimer = new System.Timers.Timer();
+        public byte[] data = new byte[5];
 
         public Form1()
         {
             InitializeComponent();
             aTimer.Interval = 50;
             aTimer.Elapsed += OnTimerElapsed;
-            aTimer.Start();
             handle = IowKitOpenDevice();
+            aTimer.Start();
         }
-
-        byte[] data = new byte[5];
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -51,18 +50,23 @@ namespace Tastenabfrage
             data[2] = 0x00;
             data[3] = 0x00;
             data[4] = 0x00;
-            IowKitWrite(handle, 0, ref data[1], 5);
+            IowKitWrite(handle, 0, ref data[0], 5);
         }
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            label2.Text = IowKitReadNonBlocking(handle, 0, ref data[1], 5).ToString();
+
+            IowKitReadNonBlocking(handle, 0, ref data[0], 5);
+            Console.WriteLine("data = " + string.Join(" ", data));
+            Invoke(new Action(() => { 
+                label2.Text = "Data[1] = " + String.Format(" {0:X2} ", data[1]) + " ( " + data[1].ToString() + " ) ";
+            }));
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            IowKitCloseDevice(handle);
             aTimer.Stop();
+            IowKitCloseDevice(handle);
         }
     }
 }
