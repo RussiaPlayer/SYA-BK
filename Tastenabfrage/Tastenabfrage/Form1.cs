@@ -30,7 +30,7 @@ namespace Tastenabfrage
         private static extern int IowKitGetNumDevs();
 
         [DllImport("iowkit", SetLastError = true)]
-        private static extern int IowKitReadNonBlocking(int iowHandle, int numPipe, ref byte buffer, int length);
+        private static extern int IowKitReadNonBlocking(int iowHandle, int numPipe, ref byte[] buffer, int length);
 
 
         private int handle;
@@ -38,15 +38,12 @@ namespace Tastenabfrage
 
         public Form1()
         {
+            IowKitOpenDevice();
             InitializeComponent();
             aTimer.Interval = 50;
             aTimer.Elapsed += OnTimerElapsed;
             aTimer.Start();
-
-            for (int i = 1; i < IowKitGetNumDevs(); i++)
-            {
-                handle = IowKitGetDeviceHandle(i);
-            }
+            handle = IowKitGetDeviceHandle(1);
         }
 
         byte[] data = new byte[5];
@@ -63,7 +60,9 @@ namespace Tastenabfrage
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
-            label2.Text = IowKitReadNonBlocking(handle, 0, ref data[2], 5).ToString();
+            var buffer = new byte[5];
+            IowKitReadNonBlocking(handle, 0, ref buffer, 5);
+            label2.Text = buffer.ToString();
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
