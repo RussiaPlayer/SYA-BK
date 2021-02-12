@@ -30,9 +30,9 @@
         {
             this.label1 = new System.Windows.Forms.Label();
             this.label2 = new System.Windows.Forms.Label();
-            this.panel1 = new System.Windows.Forms.Panel();
-            this.panel2 = new System.Windows.Forms.Panel();
-            this.panel3 = new System.Windows.Forms.Panel();
+            this.p1 = new System.Windows.Forms.Panel();
+            this.p2 = new System.Windows.Forms.Panel();
+            this.p3 = new System.Windows.Forms.Panel();
             this.SuspendLayout();
             // 
             // label1
@@ -55,38 +55,38 @@
             this.label2.TabIndex = 1;
             this.label2.Text = "label2";
             // 
-            // panel1
+            // p1
             // 
-            this.panel1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.panel1.Location = new System.Drawing.Point(70, 283);
-            this.panel1.Name = "panel1";
-            this.panel1.Size = new System.Drawing.Size(117, 100);
-            this.panel1.TabIndex = 2;
+            this.p1.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.p1.Location = new System.Drawing.Point(70, 283);
+            this.p1.Name = "p1";
+            this.p1.Size = new System.Drawing.Size(117, 100);
+            this.p1.TabIndex = 2;
             // 
-            // panel2
+            // p2
             // 
-            this.panel2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.panel2.Location = new System.Drawing.Point(214, 283);
-            this.panel2.Name = "panel2";
-            this.panel2.Size = new System.Drawing.Size(117, 100);
-            this.panel2.TabIndex = 3;
+            this.p2.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.p2.Location = new System.Drawing.Point(214, 283);
+            this.p2.Name = "p2";
+            this.p2.Size = new System.Drawing.Size(117, 100);
+            this.p2.TabIndex = 3;
             // 
-            // panel3
+            // p3
             // 
-            this.panel3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
-            this.panel3.Location = new System.Drawing.Point(357, 283);
-            this.panel3.Name = "panel3";
-            this.panel3.Size = new System.Drawing.Size(117, 100);
-            this.panel3.TabIndex = 4;
+            this.p3.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(64)))), ((int)(((byte)(64)))), ((int)(((byte)(64)))));
+            this.p3.Location = new System.Drawing.Point(357, 283);
+            this.p3.Name = "p3";
+            this.p3.Size = new System.Drawing.Size(117, 100);
+            this.p3.TabIndex = 4;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(541, 450);
-            this.Controls.Add(this.panel3);
-            this.Controls.Add(this.panel2);
-            this.Controls.Add(this.panel1);
+            this.Controls.Add(this.p3);
+            this.Controls.Add(this.p2);
+            this.Controls.Add(this.p1);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.label1);
             this.Name = "Form1";
@@ -102,9 +102,9 @@
 
         private System.Windows.Forms.Label label1;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.Panel panel1;
-        private System.Windows.Forms.Panel panel2;
-        private System.Windows.Forms.Panel panel3;
+        private System.Windows.Forms.Panel p1;
+        private System.Windows.Forms.Panel p2;
+        private System.Windows.Forms.Panel p3;
     }
 }
 

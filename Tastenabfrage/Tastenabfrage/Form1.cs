@@ -34,6 +34,18 @@ namespace Tastenabfrage
         public System.Timers.Timer aTimer = new System.Timers.Timer();
         public byte[] data = new byte[5];
 
+        //Buttons
+        private const byte pin1 = 1 << 5;
+        private const byte pin2 = 1 << 6;
+        private const byte pin3 = 1 << 7;
+
+        //grüne LED
+        private const byte pin17 = 1 << 0;
+        //gelbe LED
+        private const byte pin18 = 1 << 1;
+        //rote LED
+        private const byte pin19 = 1 << 2;
+
         public Form1()
         {
             InitializeComponent();
@@ -46,8 +58,8 @@ namespace Tastenabfrage
         private void Form1_Load(object sender, EventArgs e)
         {
             data[0] = 0x00;
-            data[1] = 0xE0;
-            data[2] = 0x00;
+            data[1] = pin1 | pin2 | pin3;
+            data[2] = pin17 | pin18 | pin19;
             data[3] = 0x00;
             data[4] = 0x00;
             IowKitWrite(handle, 0, ref data[0], 5);
@@ -61,6 +73,22 @@ namespace Tastenabfrage
             Invoke(new Action(() => { 
                 label2.Text = "Data[1] = " + String.Format(" {0:X2} ", data[1]) + " ( " + data[1].ToString() + " ) ";
             }));
+
+            ChangePanalColor(p3, (data[1] & pin1) == 0);
+            ChangePanalColor(p2, (data[1] & pin2) == 0);
+            ChangePanalColor(p1, (data[1] & pin3) == 0);
+        }
+
+        void ChangePanalColor(Panel p, bool active)
+        {
+            if (active)
+            {
+                p.BackColor = Color.Red;
+            }
+            else
+            {
+                p.BackColor = Color.Black;
+            }
         }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
