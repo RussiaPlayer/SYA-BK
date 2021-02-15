@@ -29,6 +29,7 @@ namespace Tastenabfrage
         [DllImport("iowkit", SetLastError = true)]
         private static extern int IowKitReadNonBlocking(int iowHandle, int numPipe, ref byte buffer, int length);
 
+        public int newByte;
 
         public int handle;
         public System.Timers.Timer aTimer = new System.Timers.Timer();
@@ -39,12 +40,15 @@ namespace Tastenabfrage
         private const byte pin2 = 1 << 6;
         private const byte pin3 = 1 << 7;
 
+        private const byte allInput = pin1 | pin2 | pin3;
+
         //grüne LED
-        private const byte pin17 = 1 << 0;
+        private const byte pin17 = 1;
         //gelbe LED
-        private const byte pin18 = 1 << 1;
+        private const byte pin18 = 2;
         //rote LED
-        private const byte pin19 = 1 << 2;
+        private const byte pin19 = 4;
+             
 
         public Form1()
         {
@@ -59,11 +63,13 @@ namespace Tastenabfrage
         {
             data[0] = 0x00;
             data[1] = pin1 | pin2 | pin3;
-            data[2] = pin17 | pin18 | pin19;
+            data[2] = pin17 + pin18 + pin19;
             data[3] = 0x00;
             data[4] = 0x00;
             IowKitWrite(handle, 0, ref data[0], 5);
         }
+
+        private byte startInput = allInput;
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
@@ -77,6 +83,14 @@ namespace Tastenabfrage
             ChangePanalColor(p3, (data[1] & pin1) == 0);
             ChangePanalColor(p2, (data[1] & pin2) == 0);
             ChangePanalColor(p1, (data[1] & pin3) == 0);
+
+
+            //Working on
+            /*EnableLEDs(1, (data[1] & pin1) == 0, pin1);
+            EnableLEDs(2, (data[1] & pin2) == 0, pin2);
+            EnableLEDs(3, (data[1] & pin3) == 0, pin3);
+
+            startInput = data[1];*/
         }
 
         void ChangePanalColor(Panel p, bool active)
@@ -91,10 +105,33 @@ namespace Tastenabfrage
             }
         }
 
+        void EnableLEDs(byte button, bool active, byte pin)
+        {
+            if (startInput != data[1])
+            {
+                if (active)
+                {
+                    data[2] -= pin17;
+                    IowKitWrite(handle, 0, ref data[0], 5);
+                }
+                else
+                {
+                    data[2] += pin17;
+                    IowKitWrite(handle, 0, ref data[0], 5);
+                }
+            }
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             aTimer.Stop();
             IowKitCloseDevice(handle);
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            data[2] -= pin17;
+            IowKitWrite(handle, 0, ref data[0], 5);
         }
     }
 }
