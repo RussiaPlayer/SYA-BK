@@ -43,11 +43,11 @@ namespace Tastenabfrage
         private const byte allInput = pin1 | pin2 | pin3;
 
         //grüne LED
-        private const byte pin17 = 1;
+        private const byte pin17 = 1 << 0;
         //gelbe LED
-        private const byte pin18 = 2;
+        private const byte pin18 = 1 << 1;
         //rote LED
-        private const byte pin19 = 4;
+        private const byte pin19 = 1 << 2;
              
 
         public Form1()
@@ -63,7 +63,7 @@ namespace Tastenabfrage
         {
             data[0] = 0x00;
             data[1] = pin1 | pin2 | pin3;
-            data[2] = pin17 + pin18 + pin19;
+            data[2] = pin17 | pin18 | pin19;
             data[3] = 0x00;
             data[4] = 0x00;
             IowKitWrite(handle, 0, ref data[0], 5);
@@ -84,13 +84,11 @@ namespace Tastenabfrage
             ChangePanalColor(p2, (data[1] & pin2) == 0);
             ChangePanalColor(p1, (data[1] & pin3) == 0);
 
-
-            //Working on
-            /*EnableLEDs(1, (data[1] & pin1) == 0, pin1);
+            EnableLEDs(1, (data[1] & pin1) == 0, pin1);
             EnableLEDs(2, (data[1] & pin2) == 0, pin2);
             EnableLEDs(3, (data[1] & pin3) == 0, pin3);
 
-            startInput = data[1];*/
+            startInput = data[1];
         }
 
         void ChangePanalColor(Panel p, bool active)
@@ -107,18 +105,23 @@ namespace Tastenabfrage
 
         void EnableLEDs(byte button, bool active, byte pin)
         {
-            if (startInput != data[1])
+            if (((startInput & pin) == 0) ^ ((data[1] & pin) == 0))
             {
-                if (active)
-                {
-                    data[2] -= pin17;
-                    IowKitWrite(handle, 0, ref data[0], 5);
-                }
-                else
-                {
-                    data[2] += pin17;
-                    IowKitWrite(handle, 0, ref data[0], 5);
-                }
+                SetBuffer(button - 1, active);
+                data[1] = allInput;
+                IowKitWrite(handle, 0, ref data[0], 5);
+            }
+        }
+
+        void SetBuffer(int bitPosi, bool active)
+        {
+            if (active)
+            {
+                data[2] = (byte)(data[2] & ~(1 << bitPosi));
+            }
+            else
+            {
+                data[2] = (byte)(data[2] | 1 << bitPosi);
             }
         }
 
@@ -126,12 +129,6 @@ namespace Tastenabfrage
         {
             aTimer.Stop();
             IowKitCloseDevice(handle);
-        }
-
-        private void button1_Click(object sender, EventArgs e)
-        {
-            data[2] -= pin17;
-            IowKitWrite(handle, 0, ref data[0], 5);
         }
     }
 }
