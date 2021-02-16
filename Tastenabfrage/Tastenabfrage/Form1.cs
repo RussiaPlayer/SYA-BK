@@ -69,8 +69,6 @@ namespace Tastenabfrage
             IowKitWrite(handle, 0, ref data[0], 5);
         }
 
-        private byte startInput = allInput;
-
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
 
