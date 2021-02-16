@@ -109,8 +109,13 @@ namespace Tastenabfrage
             {
                 SetBuffer(button - 1, active);
                 data[1] = allInput;
-                IowKitWrite(handle, 0, ref data[0], 5);
+                WriteToIow(new[] {data[0], allInput, data[2], data[3], data[4] });
             }
+        }
+
+        void WriteToIow(byte[] _data)
+        {
+            IowKitWrite(handle, 0, ref _data[0], 5);
         }
 
         void SetBuffer(int bitPosi, bool active)
