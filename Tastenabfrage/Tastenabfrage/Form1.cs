@@ -83,12 +83,6 @@ namespace Tastenabfrage
             ChangePanalColor(p3, (data[1] & pin1) == 0);
             ChangePanalColor(p2, (data[1] & pin2) == 0);
             ChangePanalColor(p1, (data[1] & pin3) == 0);
-
-            EnableLEDs(1, (data[1] & pin1) == 0, pin1);
-            EnableLEDs(2, (data[1] & pin2) == 0, pin2);
-            EnableLEDs(3, (data[1] & pin3) == 0, pin3);
-
-            startInput = data[1];
         }
 
         void ChangePanalColor(Panel p, bool active)
@@ -100,33 +94,6 @@ namespace Tastenabfrage
             else
             {
                 p.BackColor = Color.Black;
-            }
-        }
-
-        void EnableLEDs(byte button, bool active, byte pin)
-        {
-            if (((startInput & pin) == 0) ^ ((data[1] & pin) == 0))
-            {
-                SetBuffer(button - 1, active);
-                data[1] = allInput;
-                WriteToIow(new[] {data[0], allInput, data[2], data[3], data[4] });
-            }
-        }
-
-        void WriteToIow(byte[] _data)
-        {
-            IowKitWrite(handle, 0, ref _data[0], 5);
-        }
-
-        void SetBuffer(int bitPosi, bool active)
-        {
-            if (active)
-            {
-                data[2] = (byte)(data[2] & ~(1 << bitPosi));
-            }
-            else
-            {
-                data[2] = (byte)(data[2] | 1 << bitPosi);
             }
         }
 
