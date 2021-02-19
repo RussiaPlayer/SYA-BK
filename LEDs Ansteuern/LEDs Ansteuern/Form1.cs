@@ -74,20 +74,20 @@ namespace LEDs_Ansteuern
 
         private void checkBox1_CheckedChanged(object sender, EventArgs e)
         {
-            LEDs(checkBox1.Checked, 1, panel1);
+            LEDs(checkBox1.Checked, 1);
         }
 
         private void checkBox2_CheckedChanged(object sender, EventArgs e)
         {
-            LEDs(checkBox2.Checked, 2, panel2);
+            LEDs(checkBox2.Checked, 2);
         }
 
         private void checkBox3_CheckedChanged(object sender, EventArgs e)
         {
-            LEDs(checkBox3.Checked, 3, panel3);
+            LEDs(checkBox3.Checked, 3);
         }
 
-        private void LEDs(bool active, byte pin, Panel panel)
+        private void LEDs(bool active, byte pin)
         {
             if (active)
             {
@@ -98,44 +98,48 @@ namespace LEDs_Ansteuern
                 data[2] = (byte)(data[2] | 1 << (pin - 1));
             }
             IowKitWrite(handle, 0, ref data[0], 5);
-            ChangePanal(panel, pin, active);
+            UpdatePanel();
             ChangeLabels();
             Console.WriteLine("data = " + string.Join(" ", data));
         }
 
-        private void ChangePanal(Panel panel, byte pin, bool active)
+        private void UpdatePanel()
         {
-            if (active)
+            GetPanelByColor(pin17).BackColor = GetActivePanal(pin17);
+            GetPanelByColor(pin18).BackColor = GetActivePanal(pin18);
+            GetPanelByColor(pin19).BackColor = GetActivePanal(pin19);
+        }
+
+        private Panel GetPanelByColor(byte pin)
+        {
+            switch (pin)
             {
-                switch (pin)
-                {
-                    case 1:
-                        panel.BackColor = Color.FromArgb(25, 191, 77);
-                        break;
-                    case 2:
-                        panel.BackColor = Color.FromArgb(222, 210, 55);
-                        break;
-                    case 3:
-                        panel.BackColor = Color.FromArgb(214, 39, 39);
-                        break;
-                }
-            }
-            else
-            {
-                switch (pin)
-                {
-                    case 1:
-                        panel.BackColor = Color.FromArgb(21, 66, 35);
-                        break;
-                    case 2:
-                        panel.BackColor = Color.FromArgb(82, 78, 24);
-                        break;
-                    case 3:
-                        panel.BackColor = Color.FromArgb(92, 28, 28);
-                        break;
-                }
+                case pin17:
+                    return panel1;
+                case pin18:
+                    return panel2;
+                case pin19:
+                    return panel3;
+                default:
+                    return null;
             }
         }
+
+        private Color GetActivePanal(byte pin)
+        {
+            switch (pin)
+            {
+                case pin17:
+                    return (data[2] & pin) == 0 ? Color.FromArgb(25, 191, 77) : Color.FromArgb(21, 66, 35);
+                case pin18:
+                    return (data[2] & pin) == 0 ? Color.FromArgb(222, 210, 55) : Color.FromArgb(82, 78, 24);
+                case pin19:
+                    return (data[2] & pin) == 0 ? Color.FromArgb(214, 39, 39) : Color.FromArgb(92, 28, 28);
+                default:
+                    return Color.Black;
+            }
+        }
+
          private void ChangeLabels()
         {
             label1.Text = "Data[1] = " + String.Format(" {0:X2} ", data[1]) + " ( " + data[1].ToString() + " ) ";
@@ -153,6 +157,10 @@ namespace LEDs_Ansteuern
             {
                 aTimer.Stop();
                 data[2] = pin17 | pin18 | pin19;
+
+                LEDs(checkBox1.Checked, 1);
+                LEDs(checkBox2.Checked, 2);
+                LEDs(checkBox3.Checked, 3);
             }
         }
 
@@ -164,6 +172,7 @@ namespace LEDs_Ansteuern
             {
                 CalculatePattern();
                 IowKitWrite(handle, 0, ref data[0], 5);
+                UpdatePanel();
                 ChangeLabels();
                 counter++;
                 Console.WriteLine("data = " + string.Join(" ", data));
