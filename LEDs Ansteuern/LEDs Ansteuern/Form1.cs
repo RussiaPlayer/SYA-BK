@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using System.Runtime.InteropServices;
+using Timer = System.Timers.Timer;
 
 namespace LEDs_Ansteuern
 {
@@ -24,6 +25,7 @@ namespace LEDs_Ansteuern
         public static extern void IowKitWrite(int iowHandle, int numPipe, ref byte buffer, int length);
         //Dll-stop
 
+        private Timer aTimer = new Timer();
 
         private byte[] data = new byte[5];
         //LEDs
@@ -42,6 +44,11 @@ namespace LEDs_Ansteuern
             panel1.BackColor = Color.FromArgb(21, 66, 35);
             panel2.BackColor = Color.FromArgb(82, 78, 24);
             panel3.BackColor = Color.FromArgb(92, 28, 28);
+
+            //Timer
+            aTimer.Interval = 500;
+            aTimer.Elapsed += OnTimerEvent;
+            aTimer.AutoReset = true;
         }
 
         private void Form1_Load(object sender, EventArgs e)
@@ -61,6 +68,7 @@ namespace LEDs_Ansteuern
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
+            aTimer.Stop();
             IowKitCloseDevice(handle);
         }
 
@@ -85,13 +93,14 @@ namespace LEDs_Ansteuern
             {
                 data[2] = (byte)(data[2] & ~(1 << (pin - 1)));
             }
-            else
+            else if (!active)
             {
                 data[2] = (byte)(data[2] | 1 << (pin - 1));
             }
             IowKitWrite(handle, 0, ref data[0], 5);
             ChangePanal(panel, pin, active);
             ChangeLabels();
+            Console.WriteLine("data = " + string.Join(" ", data));
         }
 
         private void ChangePanal(Panel panel, byte pin, bool active)
@@ -133,6 +142,58 @@ namespace LEDs_Ansteuern
             label2.Text = "Data[2] = " + String.Format(" {0:X2} ", data[2]) + " ( " + data[2].ToString() + " ) ";
         }
 
-        //LaufLED
+        //Lauflicht
+        private void checkBox4_CheckedChanged(object sender, EventArgs e)
+        {
+            if (checkBox4.Checked)
+            {
+                aTimer.Start();
+            }
+            else
+            {
+                aTimer.Stop();
+                data[2] = pin17 | pin18 | pin19;
+            }
+        }
+
+        private int counter = 0;
+
+        private void OnTimerEvent(object sender, System.Timers.ElapsedEventArgs e)
+        {
+            Invoke(new Action(() =>
+            {
+                CalculatePattern();
+                IowKitWrite(handle, 0, ref data[0], 5);
+                ChangeLabels();
+                counter++;
+                Console.WriteLine("data = " + string.Join(" ", data));
+                Console.WriteLine("Counter = " + counter);
+            }));
+        }
+
+        private void CalculatePattern()
+        {
+            int reseter = byte.MaxValue;
+
+            if (counter >= 3)
+            {
+                counter = 0;
+            }
+
+            if (checkBox1.Checked && counter == 0)
+            {
+                reseter &= ~pin17;
+            }
+            if (checkBox2.Checked && counter == 1)
+            {
+                reseter &= ~pin18;
+            }
+            if (checkBox3.Checked && counter == 2)
+            {
+                reseter &= ~pin19;
+            }
+
+            data[2] = (byte)reseter;
+        }
     }
 }
