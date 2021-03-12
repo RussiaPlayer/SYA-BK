@@ -62,7 +62,6 @@ namespace LEDs_Ansteuern
             IowKitWrite(handle, 0, ref data[0], 5);
 
             //Labels
-            label1.Text = "Data[1] = " + String.Format(" {0:X2} ", data[1]) + " ( " + data[1].ToString() + " ) ";
             label2.Text = "Data[2] = " + String.Format(" {0:X2} ", data[2]) + " ( " + data[2].ToString() + " ) ";
         }
 

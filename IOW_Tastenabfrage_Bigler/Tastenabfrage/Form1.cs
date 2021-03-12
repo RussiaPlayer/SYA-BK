@@ -40,8 +40,6 @@ namespace Tastenabfrage
         private const byte pin2 = 1 << 6;
         private const byte pin3 = 1 << 7;
 
-        private const byte allInput = pin1 | pin2 | pin3;
-
         //grüne LED
         private const byte pin17 = 1 << 0;
         //gelbe LED
@@ -71,9 +69,8 @@ namespace Tastenabfrage
 
         private void OnTimerElapsed(object sender, ElapsedEventArgs e)
         {
-
             IowKitReadNonBlocking(handle, 0, ref data[0], 5);
-            Console.WriteLine("data = " + string.Join(" ", data));
+            Console.WriteLine("data = " + string.Join(" ", data)); //debug
             Invoke(new Action(() => { 
                 label2.Text = "Data[1] = " + String.Format(" {0:X2} ", data[1]) + " ( " + data[1].ToString() + " ) ";
             }));
