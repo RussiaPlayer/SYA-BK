@@ -35,16 +35,16 @@ namespace FürTest
 
         void Rechner(byte a)
         {
-            int b = Convert.ToInt32(textBox1.Text);
-            int c = Convert.ToInt32(textBox2.Text);
+            int b = Convert.ToInt32(textBox1.Text, 2);
+            int c = Convert.ToInt32(textBox2.Text, 2);
 
             switch (a)
             {
                 case 1:
-                    exit.Text = Convert.ToString(b & c);
+                    exit.Text = Convert.ToString(b & c, 2);
                     break;
                 case 2:
-                    exit.Text = Convert.ToString(b | c);
+                    exit.Text = Convert.ToString(b | c, 2);
                     break;
             }
         }
