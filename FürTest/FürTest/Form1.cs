@@ -64,7 +64,7 @@ namespace FürTest
             }
             catch (Exception)
             {
-                MessageBox.Show("Nur 1 oder 0");
+                MessageBox.Show("Fehler");
             }
         }
     }
