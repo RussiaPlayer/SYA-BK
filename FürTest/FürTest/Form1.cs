@@ -15,37 +15,56 @@ namespace FürTest
         public Form1()
         {
             InitializeComponent();
+
+            textBox1.TextChanged += Text_Changed;
+            textBox2.TextChanged += Text_Changed;
+
+            textBox1.KeyPress += Only1and0;
+            textBox2.KeyPress += Only1and0;
+        }
+
+        private void Text_Changed(object sender, EventArgs e)
+        {
+            Rechner();
+        }
+
+        private void Only1and0(object sender, KeyPressEventArgs e)
+        {
+            if ((e.KeyChar != '0') && (e.KeyChar != '1') && !char.IsControl(e.KeyChar))
+            {
+                e.Handled = true;
+            }
         }
 
         private void undByte_CheckedChanged(object sender, EventArgs e)
         {
-            if (undByte.Checked)
-            {
-                Rechner(1);
-            }
+            Rechner();
         }
 
         private void orByte_CheckedChanged(object sender, EventArgs e)
         {
-            if (orByte.Checked)
-            {
-                Rechner(2);
-            }
+            Rechner();
         }
 
-        void Rechner(byte a)
+        void Rechner()
         {
-            int b = Convert.ToInt32(textBox1.Text, 2);
-            int c = Convert.ToInt32(textBox2.Text, 2);
-
-            switch (a)
+            try
             {
-                case 1:
-                    exit.Text = Convert.ToString(b & c, 2);
-                    break;
-                case 2:
-                    exit.Text = Convert.ToString(b | c, 2);
-                    break;
+                int a = Convert.ToInt32(textBox1.Text, 2);
+                int b = Convert.ToInt32(textBox2.Text, 2);
+
+                if (undByte.Checked)
+                {
+                    exit.Text = Convert.ToString(a & b, 2);
+                }
+                else
+                {
+                    exit.Text = Convert.ToString(a | b, 2);
+                }
+            }
+            catch (Exception)
+            {
+                MessageBox.Show("Nur 1 oder 0");
             }
         }
     }
