@@ -19,6 +19,7 @@ namespace CarCrashing
         List<Panel> panels = new List<Panel>();
         Dictionary<Timer, int> timers = new Dictionary<Timer, int>();
         const int timerInterval = 1000;
+        bool canPause = false;
 
         public Form1()
         {
@@ -31,10 +32,14 @@ namespace CarCrashing
         
         public void init()
         {
+            label1.Visible = false;
+            canPause = false;
             Timer secondRow = new Timer();
             secondRow.AutoReset = false;
             secondRow.Interval = timerInterval * 2;
             secondRow.Elapsed += (sender, args) => SpawnObstacle();
+            secondRow.Elapsed += (sender, args) => canPause = true;
+            secondRow.Elapsed += (sender, args) => label1.Visible = true;
             secondRow.Start();
 
             SpawnPlayer();
@@ -58,10 +63,16 @@ namespace CarCrashing
             panels.Add(panel1);
         }
 
-        void SpawnPlayer()
+        private void SpawnPlayer()
         {
             playerPosition = 3;
             UpdatePlayerPanel();
+        }
+
+        private int DifficultyUp()
+        {
+            int difficulty;
+            return difficulty;
         }
 
         private void MovePlayer(object sender, KeyEventArgs e)
@@ -83,6 +94,11 @@ namespace CarCrashing
                 {
                     playerPosition--;
                 }
+            }
+
+            if (e.KeyCode == Keys.Escape && canPause)
+            {
+                Credits();
             }
 
             UpdatePlayerPanel();
@@ -115,7 +131,7 @@ namespace CarCrashing
         private void SpawnObstacle()
         {
             Timer atimer = new Timer();
-            atimer.Interval = 1000;
+            atimer.Interval = timerInterval;
             atimer.AutoReset = true;
             atimer.Elapsed += GameLoop;
             timers.Add(atimer, 4);
@@ -203,7 +219,7 @@ namespace CarCrashing
             {
                 RandomGen();
             }
-            Console.WriteLine(line + " : " + freeSpot);
+
             if (line == 12)
             {
                 Colusion(freeSpot);
@@ -220,8 +236,6 @@ namespace CarCrashing
         private void Colusion(int freeSpot)
         {
             int pos = playerPosition * -1 + 12;
-            Console.WriteLine(pos);
-            Console.WriteLine(freeSpot);
 
             if (pos != freeSpot)
             {
@@ -247,6 +261,28 @@ namespace CarCrashing
                 {
                     Invoke(new Action(() => this.Close()));
                 }
+            }
+        }
+
+        private void Credits()
+        {
+            foreach (var timer in timers.Keys)
+            {
+                timer.Stop();
+            }
+
+            timers.Clear();
+
+            DialogResult result = MessageBox.Show("Made by: RussiaPlayer\nHelper: Taucher2003", "Credits", MessageBoxButtons.OK);
+            if (result == DialogResult.OK)
+            {
+                foreach (var panel in panels)
+                {
+                    panel.BackColor = Color.FromArgb(224, 224, 224);
+                }
+
+                panels.Clear();
+                init();
             }
         }
     }
