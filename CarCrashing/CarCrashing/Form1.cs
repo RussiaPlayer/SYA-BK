@@ -7,6 +7,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using Timer = System.Timers.Timer;
+using System.Timers;
 
 namespace CarCrashing
 {
@@ -14,20 +16,46 @@ namespace CarCrashing
     {
         byte playerPosition;
         Random rnd = new Random();
+        List<Panel> panels = new List<Panel>();
+        Dictionary<Timer, int> timers = new Dictionary<Timer, int>();
+        const int timerInterval = 1000;
 
         public Form1()
         {
             InitializeComponent();
             this.KeyPreview = true;
             this.KeyDown += new KeyEventHandler(MovePlayer);
-            timer1.Start();
+
+            init();
+        } 
+        
+        public void init()
+        {
+            Timer secondRow = new Timer();
+            secondRow.AutoReset = false;
+            secondRow.Interval = timerInterval * 2;
+            secondRow.Elapsed += (sender, args) => SpawnObstacle();
+            secondRow.Start();
 
             SpawnPlayer();
-        }
-
-        private void timer1_Tick(object sender, EventArgs e)
-        {
             SpawnObstacle();
+
+            panels.Add(panel16);
+            panels.Add(panel15);
+            panels.Add(panel14);
+            panels.Add(panel13);
+            panels.Add(panel12);
+            panels.Add(panel11);
+            panels.Add(panel10);
+            panels.Add(panel9);
+            panels.Add(panel8);
+            panels.Add(panel7);
+            panels.Add(panel6);
+            panels.Add(panel5);
+            panels.Add(panel4);
+            panels.Add(panel3);
+            panels.Add(panel2);
+            panels.Add(panel1);
         }
 
         void SpawnPlayer()
@@ -38,14 +66,18 @@ namespace CarCrashing
 
         private void MovePlayer(object sender, KeyEventArgs e)
         {
-            if(e.KeyCode == Keys.D)
+            if (panel1.BackColor.Equals(Color.Green) || panel2.BackColor.Equals(Color.Green) || panel3.BackColor.Equals(Color.Green) || panel4.BackColor.Equals(Color.Green))
+            {
+                return;
+            }
+            if((e.KeyCode == Keys.D) || (e.KeyCode == Keys.Right))
             {
                 if(playerPosition < 4)
                 {
                     playerPosition++;
                 }
             }
-            if (e.KeyCode == Keys.A)
+            if ((e.KeyCode == Keys.A) || (e.KeyCode == Keys.Left))
             {
                 if (playerPosition > 1)
                 {
@@ -80,27 +112,141 @@ namespace CarCrashing
             }
         }
 
-        void SpawnObstacle()
+        private void SpawnObstacle()
         {
+            Timer atimer = new Timer();
+            atimer.Interval = 1000;
+            atimer.AutoReset = true;
+            atimer.Elapsed += GameLoop;
+            timers.Add(atimer, 4);
+            atimer.Start();
+
             panel13.BackColor = Color.Green;
             panel14.BackColor = Color.Green;
             panel15.BackColor = Color.Green;
             panel16.BackColor = Color.Green;
 
-            switch (rnd.Next(1, 5))
+            RandomGen();
+        }
+
+        private void RandomGen()
+        {
+            int random = rnd.Next(0, 100);
+
+            if (random <= 25)
             {
-                case 1:
-                    panel13.BackColor = Color.FromArgb(224, 224, 224);
-                    break;
-                case 2:
-                    panel14.BackColor = Color.FromArgb(224, 224, 224);
-                    break;
-                case 3:
-                    panel15.BackColor = Color.FromArgb(224, 224, 224);
-                    break;
+                panel13.BackColor = Color.FromArgb(224, 224, 224);
+            }
+            else if(random >= 25 && random <= 50)
+            {
+                panel14.BackColor = Color.FromArgb(224, 224, 224);
+            }
+            else if (random >= 50 && random <= 75)
+            {
+                panel15.BackColor = Color.FromArgb(224, 224, 224);
+            }
+            else if (random >= 75 && random <= 100)
+            {
+                panel16.BackColor = Color.FromArgb(224, 224, 224);
+            }
+        }
+
+        private void MoveObstacle(int line, Timer timer)
+        {
+            switch (line)
+            {
                 case 4:
-                    panel16.BackColor = Color.FromArgb(224, 224, 224);
+                    TurnOff(line);
                     break;
+                case 8:
+                    TurnOff(line);
+                    break;
+                case 12:
+                    TurnOff(line);
+                    break;
+                case 16:
+                    TurnOff(line);
+                    UpdatePlayerPanel();
+                    break;
+            }
+            timers.Remove(timer);
+            timers.Add(timer, line == 16 ? 4 : line + 4);
+        }
+
+        private void TurnOff(int line)
+        {
+            int freeSpot = 0;
+            for (int i = line - 4; i < line; i++)
+            {
+                if (!panels[i].BackColor.Equals(Color.Green))
+                {
+                    freeSpot = i;
+                }
+                panels[i].BackColor = Color.FromArgb(224, 224, 224);
+            }
+
+            if (line == 16)
+            {
+                line = 0;
+            }
+
+            for (int i = line; i < line + 4; i++)
+            {
+                if(i == freeSpot + 4)
+                {
+                    continue;
+                }
+                panels[i].BackColor = Color.Green;
+            }
+
+            if (line == 0)
+            {
+                RandomGen();
+            }
+            Console.WriteLine(line + " : " + freeSpot);
+            if (line == 12)
+            {
+                Colusion(freeSpot);
+            }
+        }
+
+        private void GameLoop(object sender, ElapsedEventArgs args)
+        {
+            int line;
+            timers.TryGetValue(sender as Timer, out line);
+            MoveObstacle(line, sender as Timer);
+        }
+
+        private void Colusion(int freeSpot)
+        {
+            int pos = playerPosition * -1 + 12;
+            Console.WriteLine(pos);
+            Console.WriteLine(freeSpot);
+
+            if (pos != freeSpot)
+            {
+                foreach (var timer in timers.Keys)
+                {
+                    timer.Stop();
+                }
+
+                timers.Clear();
+
+                DialogResult result = MessageBox.Show("Game Over", "", MessageBoxButtons.RetryCancel, MessageBoxIcon.Error);
+                if(result == DialogResult.Retry)
+                {
+                    foreach (var panel in panels)
+                    {
+                        panel.BackColor = Color.FromArgb(224, 224, 224);
+                    }
+
+                    panels.Clear();
+                    init();
+                }
+                if(result == DialogResult.Cancel)
+                {
+                    Invoke(new Action(() => this.Close()));
+                }
             }
         }
     }
