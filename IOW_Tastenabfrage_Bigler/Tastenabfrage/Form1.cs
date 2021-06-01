@@ -97,5 +97,15 @@ namespace Tastenabfrage
             aTimer.Stop();
             IowKitCloseDevice(handle);
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="a"></param>
+        /// <returns></returns>
+        private int JustinsMumIstGay(int a)
+        {
+            return 0;
+        }
     }
 }

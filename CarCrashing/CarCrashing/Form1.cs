@@ -69,12 +69,6 @@ namespace CarCrashing
             UpdatePlayerPanel();
         }
 
-        private int DifficultyUp()
-        {
-            int difficulty;
-            return difficulty;
-        }
-
         private void MovePlayer(object sender, KeyEventArgs e)
         {
             if (panel1.BackColor.Equals(Color.Green) || panel2.BackColor.Equals(Color.Green) || panel3.BackColor.Equals(Color.Green) || panel4.BackColor.Equals(Color.Green))
@@ -172,16 +166,16 @@ namespace CarCrashing
             switch (line)
             {
                 case 4:
-                    TurnOff(line);
+                    MoveDown(line);
                     break;
                 case 8:
-                    TurnOff(line);
+                    MoveDown(line);
                     break;
                 case 12:
-                    TurnOff(line);
+                    MoveDown(line);
                     break;
                 case 16:
-                    TurnOff(line);
+                    MoveDown(line);
                     UpdatePlayerPanel();
                     break;
             }
@@ -189,7 +183,7 @@ namespace CarCrashing
             timers.Add(timer, line == 16 ? 4 : line + 4);
         }
 
-        private void TurnOff(int line)
+        private void MoveDown(int line)
         {
             int freeSpot = 0;
             for (int i = line - 4; i < line; i++)
