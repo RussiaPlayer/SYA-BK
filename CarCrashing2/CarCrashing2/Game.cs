@@ -1,7 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Drawing;
+using System.Threading;
+using System.Timers;
 using System.Windows.Forms;
+using Timer = System.Timers.Timer;
 
 namespace CarCrashing2
 {
@@ -12,6 +15,7 @@ namespace CarCrashing2
 
         private readonly Dictionary<int, Row> _rows = new Dictionary<int, Row>();
         public Player Player { get; private set; }
+        public List<Obstacle> Obstacles { get; private set; }
         private Row lastRow;
         
         public Game(int height, int width)
@@ -23,6 +27,13 @@ namespace CarCrashing2
 
             this.KeyDown += KeyPressed;
             this.KeyPreview = true;
+
+            Obstacles = new List<Obstacle>();
+            
+            Timer GameLoop = new Timer();
+            GameLoop.Interval = 1000;
+            GameLoop.Elapsed += GameLoopElapsed;
+            GameLoop.Start();
         }
 
         private void KeyPressed(object sender, KeyEventArgs e)
@@ -47,6 +58,30 @@ namespace CarCrashing2
 
             Player = new Player(lastRow);
             Player.Spawn();
+
+            Obstacle obstacle = new Obstacle(_rows);
+            obstacle.Generate();
+            Obstacles.Add(obstacle);
+        }
+
+        private void GameLoopElapsed(object sender, ElapsedEventArgs e)
+        {
+            foreach (var obstacle in Obstacles)
+            {
+                obstacle.Move();
+            }
+
+            if (Obstacles[0].killBool)
+            {
+                Obstacles.Remove(Obstacles[0]);
+            }
+            
+            if (Obstacles[Obstacles.Count - 1].positon.Equals(2))
+            {
+                Obstacle obstacle = new Obstacle(_rows);
+                obstacle.Generate();
+                Obstacles.Add(obstacle);
+            }
         }
 
         private void PlayGroundSetup()

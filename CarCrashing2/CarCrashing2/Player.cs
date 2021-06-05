@@ -32,5 +32,10 @@ namespace CarCrashing2
             lastRow.Panels[positon + move].BackColor = Color.Red;
             positon += move;
         }
+
+        public void Collision()
+        {
+            
+        }
     }
 }
