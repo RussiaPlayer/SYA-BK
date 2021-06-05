@@ -16,5 +16,11 @@ namespace CarCrashing2
         {
             InitializeComponent();
         }
+        
+        private void btnStart_Click(object sender, EventArgs e)
+        {
+            Game game = new Game((int)nrHeight.Value,(int)nrWidth.Value);
+            game.Show();
+        }
     }
 }

@@ -8,6 +8,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using MySqlConnector;
 
 namespace TestSQL
 {
@@ -19,24 +20,35 @@ namespace TestSQL
         }
 
 
-        private void button1_Click(object sender, EventArgs e)
+        private void btnLoad_Click(object sender, EventArgs e)
         {
-            SqlConnection con = new SqlConnection();
-            con.ConnectionString = @"Data Source=(local)\RUSSENSERVER;Initial Catalog=master;Integrated Security=SSPI;Trusted_Connection=True;";
-            string sql = "SELECT * FROM Justingay";
-            SqlCommand cmd = new SqlCommand(sql, con);
+            MySQL_ToDatagridview();
+        }
+
+        private void btnSave_Click(object sender, EventArgs e)
+        {
             
-            con.Open();
-            using (con)
-            {
-                using (SqlDataReader dr = cmd.ExecuteReader())
-                {
-                    while (dr.Read())
-                    {
-                        textBox1.Text += dr["Name"].ToString() + Environment.NewLine;
-                    }
-                }
-            }
+        }
+        
+        private void MySQL_ToDatagridview()
+        {
+            //VarribleKeeper.MySQLConnectionString = your connection string
+            //info being your table name
+            MySqlConnection mysqlCon = new MySqlConnection("server=localhost;uid=root;pwd=root;database=test1;");
+            mysqlCon.Open();
+
+            MySqlDataAdapter MyDA = new MySqlDataAdapter();
+            string sqlSelectAll = "SELECT * from reactionroles";
+            MyDA.SelectCommand = new MySqlCommand(sqlSelectAll, mysqlCon);
+
+            DataTable table = new DataTable();
+            MyDA.Fill(table);
+
+            BindingSource bSource = new BindingSource();
+            bSource.DataSource = table;
+
+
+            dataGridView1.DataSource = bSource;
         }
     }
 }

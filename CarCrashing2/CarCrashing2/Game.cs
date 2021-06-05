@@ -1,0 +1,91 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Drawing;
+using System.Windows.Forms;
+
+namespace CarCrashing2
+{
+    public partial class Game : Form
+    {
+        public int _height { get; set; }
+        public int _width { get; set; }
+
+        private readonly Dictionary<int, Row> _rows = new Dictionary<int, Row>();
+        public Player Player { get; private set; }
+        private Row lastRow;
+        
+        public Game(int height, int width)
+        {
+            InitializeComponent();
+
+            this._height = height;
+            this._width = width;
+
+            this.KeyDown += KeyPressed;
+            this.KeyPreview = true;
+        }
+
+        private void KeyPressed(object sender, KeyEventArgs e)
+        {
+            switch (e.KeyCode)
+            {
+                case Keys.Left:
+                case Keys.A:
+                    Player.Move(-1);
+                    break;
+                case Keys.Right:
+                case Keys.D:
+                    Player.Move(1);
+                    break;
+            }
+        }
+
+        private void Game_Load(object sender, EventArgs e)
+        {
+            PlayGroundSetup();
+            lastRow = _rows[_height - 1];
+
+            Player = new Player(lastRow);
+            Player.Spawn();
+        }
+
+        private void PlayGroundSetup()
+        {
+            //Create the Panels
+            for (int i = 0; i < _height; i++)
+            {
+                CreateRow(i);
+            }
+            
+            //Setup the size and location of all Panels
+            containerControl1.Height = _height * 55 + 45;
+            containerControl1.Width = _width * 55 + 22;
+            
+            this.Height = containerControl1.Height + 50;
+            this.Width = containerControl1.Width + 100;
+
+            containerControl1.Location = new Point((this.Width/2) - (containerControl1.Width/2), (this.Height/2) - (containerControl1.Height/2));
+        }
+
+        private void CreateRow(int i)
+        {
+            Panel[] panels = new Panel[_width];
+            for (int j = 0; j < _width; j++)
+            {
+                Panel panel = new Panel {Size = new Size(55, 55)};
+                panel.SetBounds(5 + j * panel.Width, 5 + i * panel.Height, 50, 50);
+                panel.Name = j + "";
+                panel.BackColor = Color.Gray;
+                panels[j] = panel;
+                containerControl1.Controls.Add(panel);
+            }
+            Row row = new Row(panels);
+            _rows.Add(i, row);
+        }
+
+        private void Game_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            
+        }
+    }
+}
